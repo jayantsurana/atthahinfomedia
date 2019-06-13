@@ -7,9 +7,11 @@ int motorIn4 = 12;
 long duration, distance;
 String voice;
 char c;
+char stopping;
 
 void setup() 
 {
+  stopping='1';
   Serial.begin(9600);
   pinMode(trigPin, OUTPUT);
   pinMode(echoPin, INPUT);
@@ -38,7 +40,7 @@ void loop()
   duration = pulseIn(echoPin, HIGH);
   distance = duration/58.2;
 
-  if(distance<30){
+  if(distance<30 && stopping == '0'){
     digitalWrite(motorIn1, HIGH); 
     digitalWrite(motorIn2, LOW); 
     digitalWrite(motorIn3, HIGH); 
@@ -54,6 +56,7 @@ void loop()
     digitalWrite(motorIn2, LOW);
     digitalWrite(motorIn3, LOW);
     digitalWrite(motorIn4, HIGH);
+    stopping='0';
     delay(100);
   }else if(voice=="back" || c == '2'){
     digitalWrite(motorIn1, LOW);
@@ -61,6 +64,7 @@ void loop()
     digitalWrite(motorIn3, HIGH);
     digitalWrite(motorIn4, LOW);  
     delay(100);
+    stopping='0';
   }else if(voice=="left" || c == '3'){
     digitalWrite(motorIn1, HIGH);
     digitalWrite(motorIn2, LOW);
@@ -72,6 +76,7 @@ void loop()
     digitalWrite(motorIn3, LOW);
     digitalWrite(motorIn4, HIGH);
     delay(100); 
+    stopping='0';
   }else if(voice=="right" || c == '4'){
     digitalWrite(motorIn1, LOW);
     digitalWrite(motorIn2, LOW);
@@ -82,14 +87,17 @@ void loop()
     digitalWrite(motorIn2, LOW);
     digitalWrite(motorIn3, LOW);
     digitalWrite(motorIn4, HIGH);
-    delay(100);   
+    delay(100);
+    stopping='0';  
   }else if(voice=="stop" || c == '5'){
     digitalWrite(motorIn1, LOW);
     digitalWrite(motorIn2, LOW);
     digitalWrite(motorIn3, LOW);
     digitalWrite(motorIn4, LOW);
     delay(100);
-  }       
+    stopping='1';
+  }  
+       
   if(voice.length()>0){
     Serial.println(voice);
     voice="";
